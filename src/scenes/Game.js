@@ -43,15 +43,22 @@ export class Game extends Phaser.Scene {
         // Set collision specifically for the top tile (Index 1)
         this.groundLayer.setCollision(1);
 
-        // Character
+        // --- Character (Player) ---
         this.player = this.physics.add.sprite(50, 100, 'char_blue');
         this.player.setCollideWorldBounds(false);
-
-        // Adjust collision body
         this.player.body.setSize(14, 30);
         this.player.body.setOffset(21, 26);
-
         this.physics.add.collider(this.player, this.groundLayer);
+        this.player.play('idle');
+
+        // --- NPC (Mask Boy) ---
+        // Place him a bit to the right so he is visible
+        this.npc = this.physics.add.sprite(150, 100, 'mask_boy_idle');
+        this.npc.setCollideWorldBounds(false);
+        this.npc.body.setSize(20, 50); // Approximated box
+        this.npc.body.setOffset(22, 14); // Adjusted for 64x64 frame to sit on ground
+        this.physics.add.collider(this.npc, this.groundLayer);
+        this.npc.play('mask_boy_idle_anim');
 
         // Camera
         this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);
@@ -61,9 +68,6 @@ export class Game extends Phaser.Scene {
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
         this.wasd = this.input.keyboard.addKeys('W,A,S,D,Z,X');
-
-        // Initial state
-        this.player.play('idle');
     }
 
     generateChunk() {

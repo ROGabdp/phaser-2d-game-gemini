@@ -109,6 +109,21 @@
             ]
         },
         {
+            "key": "mask_boy_idle",
+            "path": "assets/oakwoods/character/mask_boy_idle.png",
+            "frameWidth": 64,
+            "frameHeight": 64,
+            "animations": [
+                {
+                    "key": "mask_boy_idle_anim",
+                    "start": 0,
+                    "end": 111,
+                    "frameRate": 24,
+                    "repeat": -1
+                }
+            ]
+        },
+        {
             "key": "shop_anim",
             "path": "assets/oakwoods/decorations/shop_anim.png",
             "frameWidth": 118,
