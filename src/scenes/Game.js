@@ -58,7 +58,25 @@ export class Game extends Phaser.Scene {
         this.npc.body.setSize(20, 50); // Approximated box
         this.npc.body.setOffset(22, 14); // Adjusted for 64x64 frame to sit on ground
         this.physics.add.collider(this.npc, this.groundLayer);
+        // Initial animation
         this.npc.play('mask_boy_idle_anim');
+
+        // Animation Cycle Logic
+        this.time.addEvent({
+            delay: 3000,
+            loop: true,
+            callback: () => {
+                const anims = ['mask_boy_idle_anim', 'mask_boy_walk_anim', 'mask_boy_attack_anim'];
+                const currentKey = this.npc.anims.currentAnim ? this.npc.anims.currentAnim.key : '';
+
+                let nextAnim = anims[0];
+                if (currentKey === anims[0]) nextAnim = anims[1];
+                else if (currentKey === anims[1]) nextAnim = anims[2];
+                else if (currentKey === anims[2]) nextAnim = anims[0];
+
+                this.npc.play(nextAnim);
+            }
+        });
 
         // Camera
         this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);

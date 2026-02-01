@@ -124,6 +124,36 @@
             ]
         },
         {
+            "key": "mask_boy_walk",
+            "path": "assets/oakwoods/character/mask_boy_walk.png",
+            "frameWidth": 64,
+            "frameHeight": 64,
+            "animations": [
+                {
+                    "key": "mask_boy_walk_anim",
+                    "start": 0,
+                    "end": 41,
+                    "frameRate": 24,
+                    "repeat": -1
+                }
+            ]
+        },
+        {
+            "key": "mask_boy_attack",
+            "path": "assets/oakwoods/character/mask_boy_attack.png",
+            "frameWidth": 64,
+            "frameHeight": 64,
+            "animations": [
+                {
+                    "key": "mask_boy_attack_anim",
+                    "start": 0,
+                    "end": 44,
+                    "frameRate": 24,
+                    "repeat": 0
+                }
+            ]
+        },
+        {
             "key": "shop_anim",
             "path": "assets/oakwoods/decorations/shop_anim.png",
             "frameWidth": 118,
