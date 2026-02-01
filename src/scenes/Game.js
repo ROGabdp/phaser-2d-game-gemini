@@ -110,6 +110,21 @@ export class Game extends Phaser.Scene {
         const { left, right, up, space } = this.cursors;
         const { A, D, W, Z, X } = this.wasd;
 
+        // Attack Input
+        // Only allow attack if on ground
+        if (this.player.body.blocked.down && (Phaser.Input.Keyboard.JustDown(Z) || Phaser.Input.Keyboard.JustDown(X))) {
+            this.player.play('attack');
+            // Stop movement during attack
+            this.player.setVelocityX(0);
+            return; // Skip other updates
+        }
+
+        // If currently attacking, don't move
+        if (this.player.anims.isPlaying && this.player.anims.currentAnim.key === 'attack') {
+            this.player.setVelocityX(0);
+            return;
+        }
+
         // Movement
         if (left.isDown || A.isDown) {
             this.player.setVelocityX(-speed);
@@ -124,16 +139,7 @@ export class Game extends Phaser.Scene {
         else {
             this.player.setVelocityX(0);
             if (this.player.body.blocked.down) {
-                // If attacking
-                if (Phaser.Input.Keyboard.JustDown(Z)) {
-                    this.player.play('attack_1');
-                } else if (Phaser.Input.Keyboard.JustDown(X)) {
-                    this.player.play('attack_2');
-                } else {
-                    if (!this.player.anims.isPlaying || (this.player.anims.currentAnim.key !== 'attack_1' && this.player.anims.currentAnim.key !== 'attack_2')) {
-                        this.player.play('idle', true);
-                    }
-                }
+                this.player.play('idle', true);
             }
         }
 
@@ -143,8 +149,19 @@ export class Game extends Phaser.Scene {
             this.player.play('jump', true);
         }
 
+        // Air Animation Logic
+        if (!this.player.body.blocked.down) {
+            if (this.player.body.velocity.y < 0) {
+                // Rising
+                this.player.play('jump', true);
+            } else {
+                // Falling
+                this.player.play('fall', true);
+            }
+        }
+
         this.player.on('animationcomplete', (anim) => {
-            if (anim.key === 'attack_1' || anim.key === 'attack_2') {
+            if (anim.key === 'attack') {
                 this.player.play('idle', true);
             }
         });
