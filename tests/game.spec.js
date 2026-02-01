@@ -15,9 +15,9 @@ test('Game loads and runs', async ({ page }) => {
         }
     });
 
-    // Verify the canvas size attributes (internal resolution)
-    await expect(canvas).toHaveAttribute('width', '960');
-    await expect(canvas).toHaveAttribute('height', '540');
+    // Verify the canvas size attributes (native resolution)
+    await expect(canvas).toHaveAttribute('width', '320');
+    await expect(canvas).toHaveAttribute('height', '180');
 
     // Take a screenshot for visual verification
     await page.screenshot({ path: 'tests/game_initial_load.png' });

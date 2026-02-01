@@ -1,52 +1,52 @@
-# Phaser 2D Game - Oak Woods
+# Phaser 2D 遊戲 - Oak Woods
 
-A 2D platformer game built with [Phaser 3](https://phaser.io/) and [Vite](https://vitejs.dev/), featuring parallax backgrounds, tile-based ground, and a fully animated character.
+這是一個使用 [Phaser 3](https://phaser.io/) 和 [Vite](https://vitejs.dev/) 建構的 2D 平台遊戲，包含視差背景、圖塊地圖 (Tilemap) 地板以及完整動畫的角色。
 
-## Features
+## 功能特色
 
-- **Parallax Background**: 3-layer scrolling background for depth.
-- **Character Controller**: Smooth animations for Idle, Walk, Run, Jump, and Attacks.
-- **Controls**:
-  - **Move**: WASD or Arrow Keys
-  - **Jump**: Space, Up, or W
-  - **Attack**: Z (Attack 1), X (Attack 2)
-- **Asset Management**: Centralized `assets.json` for easy asset loading.
-- **Dimensions**: Native 960x540 resolution (Pixel Art).
+- **視差背景**：3 層視差捲動背景，營造深度感。
+- **角色控制**：流暢的待機、行走、奔跑、跳躍與攻擊動畫。
+- **操作方式**：
+  - **移動**：WASD 或 方向鍵
+  - **跳躍**：空白鍵 (Space)、上 (Up) 或 W
+  - **攻擊**：Z (攻擊 1)、X (攻擊 2)
+- **資源管理**：使用 `assets.json` 集中管理並載入遊戲素材。
+- **解析度**：原生 320x180 解析度 (Pixel Art 風格)，在網頁上自動縮放以適應螢幕。
 
-## Getting Started
+## 快速開始
 
-### Prerequisites
+### 前置需求
 
 - Node.js (v16+)
 - npm
 
-### Installation
+### 安裝
 
 ```bash
 npm install
 ```
 
-### Development
+### 開發
 
-Start the local development server:
+啟動本地開發伺服器：
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:5173/](http://localhost:5173/) in your browser.
+在瀏覽器中開啟 [http://localhost:5173/](http://localhost:5173/)。
 
-### Testing
+### 測試
 
-Run the automated Playwright tests to verify the game loads correctly:
+執行 Playwright 自動化測試以驗證遊戲是否正常運作：
 
 ```bash
 npx playwright test
 ```
 
-## Directory Structure
+## 目錄結構
 
-- `public/assets/oakwoods`: Game assets (sprites, tilesets).
-- `src/scenes`: Phaser Scenes (Boot, Preloader, Game).
-- `src/main.js`: Game entry point and configuration.
-- `tests/`: Playwright verification tests.
+- `public/assets/oakwoods`：遊戲素材 (精靈圖、圖塊集)。
+- `src/scenes`：Phaser 場景 (Boot, Preloader, Game)。
+- `src/main.js`：遊戲入口與設定檔。
+- `tests/`：Playwright 驗證測試。

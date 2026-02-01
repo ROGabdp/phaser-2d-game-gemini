@@ -10,7 +10,7 @@ export class Game extends Phaser.Scene {
 
         // Background Layers
         // We use TileSprite to allow scrolling
-        // Scale factor: fitting the image height to the game height if needed
+        // Native size of backgrounds is 320x180, which matches game size.
         this.bg1 = this.add.tileSprite(0, 0, width, height, 'background_layer_1')
             .setOrigin(0, 0)
             .setScrollFactor(0);
@@ -24,44 +24,39 @@ export class Game extends Phaser.Scene {
             .setScrollFactor(0);
 
         // Ground
-        // Since we don't have a map file, we create a blank map
-        const map = this.make.tilemap({ tileWidth: 24, tileHeight: 24, width: 40, height: 23 }); // 960/24 = 40, 540/24 = 22.5
+        // Map size in tiles (24x24 px)
+        // 320 / 24 ~= 13.3. Let's make it 40 wide just to be safe.
+        // 180 / 24 = 7.5 height.
+        const mapWidth = 40;
+        const mapHeight = 10;
+
+        const map = this.make.tilemap({ tileWidth: 24, tileHeight: 24, width: mapWidth, height: mapHeight });
         const tileset = map.addTilesetImage('oak_woods_tileset');
         this.groundLayer = map.createBlankLayer('ground', tileset);
 
-        // Fill the bottom 2 rows with tiles
-        // We don't know the exact tile IDs, let's assume some basics or randomize for texture
-        // Tile indices are 0-based. Let's try 0, 1, 2 for now.
-        // If the tileset is standard, the top-left is 0.
-        // We will fill the bottom with index 1 (safe guess) and top of ground with index 0.
+        // Fill the bottom rows with tiles to create floor
+        // 180px height. Floor at ~156px (row 6.5).
+        // Let's put ground at row 6 and 7 (0-indexed). 6*24=144. 7*24=168.
+        const groundY = 6;
 
-        const groundY = 21; // 2nd to last row
-        for (let x = 0; x < 40; x++) {
+        for (let x = 0; x < mapWidth; x++) {
+            // Top of ground
             this.groundLayer.putTileAt(1, x, groundY);
+            // Below ground
             this.groundLayer.putTileAt(1, x, groundY + 1);
+            this.groundLayer.putTileAt(1, x, groundY + 2);
         }
 
         this.groundLayer.setCollisionByExclusion([-1]);
 
-        // Scale background to fit height if needed (simple fix)
-        // Assuming 960x540, and bg images might be e.g. 320x180
-        // We can scale them up.
-        const scaleX = width / this.bg1.width;
-        const scaleY = height / this.bg1.height;
-        const scale = Math.max(scaleX, scaleY);
-
-        this.bg1.setScale(scale).setScrollFactor(0);
-        this.bg2.setScale(scale).setScrollFactor(0);
-        this.bg3.setScale(scale).setScrollFactor(0);
-
         // Character
         // spawn at left side, above ground
-        this.player = this.physics.add.sprite(100, 400, 'char_blue');
+        this.player = this.physics.add.sprite(50, 100, 'char_blue');
         this.player.setCollideWorldBounds(true);
 
         // Adjust collision body (approximated for 56x56 sprite with padding)
-        this.player.body.setSize(20, 40);
-        this.player.body.setOffset(18, 16); // Centering the body
+        this.player.body.setSize(14, 30); // Smaller body for tighter hitboxes
+        this.player.body.setOffset(21, 26);
 
         this.physics.add.collider(this.player, this.groundLayer);
 
@@ -80,16 +75,16 @@ export class Game extends Phaser.Scene {
     update() {
         if (!this.player) return;
 
-        // Parallax updates based on camera scroll (if camera moves)
-        // Since we have a static screen size for now (until we make the world larger),
-        // we can scroll just based on player position or keep it static.
-        // For the baseline, let's keep it static or use the previous auto-scroll for demo.
-        // Actually, let's stop auto-scroll and make it reactive to player if we had a wide world.
-        // But our "map" is only 40 tiles wide (960px), which matches the screen.
-        // So no scrolling needed yet.
+        // Parallax updates (basic)
+        // Since scene is static size, we just auto-scroll slightly for effect
+        // or just leave it static. Let's add slight auto-scroll for atmosphere
+        // if player moves? No, let's keep it static for now as requested "baseline".
+        // Actually, let's add parallax based on camera scroll if we had a wider world.
+        // But the world is 320px wide (screen size).
+        // So let's keep it static.
 
-        const speed = 160;
-        const jumpForce = -400; // Gravity is 1000
+        const speed = 60; // Slower speed for smaller resolution
+        const jumpForce = -250; // Adjusted for physics scale (gravity 1000 might feel heavy, let's check)
 
         const { left, right, up, space } = this.cursors;
         const { A, D, W, Z, X } = this.wasd;
@@ -128,7 +123,7 @@ export class Game extends Phaser.Scene {
             this.player.play('jump', true);
         }
 
-        // Attack completion handling (simple)
+        // Attack completion handling
         this.player.on('animationcomplete', (anim) => {
             if (anim.key === 'attack_1' || anim.key === 'attack_2') {
                 this.player.play('idle', true);

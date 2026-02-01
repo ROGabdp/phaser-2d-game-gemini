@@ -4,8 +4,8 @@ import { Game } from './scenes/Game';
 
 const config = {
     type: Phaser.AUTO,
-    width: 960, // approximate from mockup 
-    height: 540,
+    width: 320, // Native asset resolution
+    height: 180,
     parent: 'app',
     pixelArt: true,
     physics: {
