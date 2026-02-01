@@ -5,12 +5,17 @@ export class Game extends Phaser.Scene {
         super('Game');
     }
 
+    init() {
+        this.chunkSize = 20; // Number of tiles per chunk
+        this.tileSize = 24;  // Pixels per tile
+        this.lastChunkX = 0; // X position of the next chunk to be generated (in tiles)
+        this.chunkWidthPixel = this.chunkSize * this.tileSize;
+    }
+
     create() {
         const { width, height } = this.scale;
 
         // Background Layers
-        // We use TileSprite to allow scrolling
-        // Native size of backgrounds is 320x180, which matches game size.
         this.bg1 = this.add.tileSprite(0, 0, width, height, 'background_layer_1')
             .setOrigin(0, 0)
             .setScrollFactor(0);
@@ -23,46 +28,35 @@ export class Game extends Phaser.Scene {
             .setOrigin(0, 0)
             .setScrollFactor(0);
 
-        // Ground
-        // Map size in tiles (24x24 px)
-        // 320 / 24 ~= 13.3. Let's make it 40 wide just to be safe.
-        // 180 / 24 = 7.5 height.
-        const mapWidth = 40;
+        // Ground - Infinite Generation
+        const maxTiles = 10000;
         const mapHeight = 10;
 
-        const map = this.make.tilemap({ tileWidth: 24, tileHeight: 24, width: mapWidth, height: mapHeight });
+        const map = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize, width: maxTiles, height: mapHeight });
         const tileset = map.addTilesetImage('oak_woods_tileset');
         this.groundLayer = map.createBlankLayer('ground', tileset);
 
-        // Fill the bottom rows with tiles to create floor
-        // 180px height. Floor at ~156px (row 6.5).
-        // Let's put ground at row 6 and 7 (0-indexed). 6*24=144. 7*24=168.
-        const groundY = 6;
+        // Initialize Ground (Create tiles first)
+        this.generateChunk(); // Chunk 0
+        this.generateChunk(); // Chunk 1 (Look ahead)
 
-        for (let x = 0; x < mapWidth; x++) {
-            // Top of ground
-            this.groundLayer.putTileAt(1, x, groundY);
-            // Below ground
-            this.groundLayer.putTileAt(1, x, groundY + 1);
-            this.groundLayer.putTileAt(1, x, groundY + 2);
-        }
-
-        this.groundLayer.setCollisionByExclusion([-1]);
+        // Set collision specifically for the top tile (Index 1)
+        this.groundLayer.setCollision(1);
 
         // Character
-        // spawn at left side, above ground
         this.player = this.physics.add.sprite(50, 100, 'char_blue');
-        this.player.setCollideWorldBounds(true);
+        this.player.setCollideWorldBounds(false);
 
-        // Adjust collision body (approximated for 56x56 sprite with padding)
-        this.player.body.setSize(14, 30); // Smaller body for tighter hitboxes
+        // Adjust collision body
+        this.player.body.setSize(14, 30);
         this.player.body.setOffset(21, 26);
 
         this.physics.add.collider(this.player, this.groundLayer);
 
-        // Camera bounds
-        this.cameras.main.setBounds(0, 0, width, height);
+        // Camera
+        this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+        this.cameras.main.setDeadzone(50, 0);
 
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -72,19 +66,46 @@ export class Game extends Phaser.Scene {
         this.player.play('idle');
     }
 
+    generateChunk() {
+        const startX = this.lastChunkX;
+        const endX = startX + this.chunkSize;
+        const groundY = 6;
+
+        // Simple flat ground generation
+        for (let x = startX; x < endX; x++) {
+            // Top of ground (Index 1)
+            this.groundLayer.putTileAt(1, x, groundY);
+
+            // Below ground (Index 1)
+            this.groundLayer.putTileAt(1, x, groundY + 1);
+            this.groundLayer.putTileAt(1, x, groundY + 2);
+        }
+
+        this.lastChunkX = endX;
+    }
+
     update() {
         if (!this.player) return;
 
-        // Parallax updates (basic)
-        // Since scene is static size, we just auto-scroll slightly for effect
-        // or just leave it static. Let's add slight auto-scroll for atmosphere
-        // if player moves? No, let's keep it static for now as requested "baseline".
-        // Actually, let's add parallax based on camera scroll if we had a wider world.
-        // But the world is 320px wide (screen size).
-        // So let's keep it static.
+        // Infinite Ground Generation
+        const playerTileX = Math.floor(this.player.x / this.tileSize);
+        if (playerTileX > this.lastChunkX - (this.chunkSize * 1.5)) {
+            this.generateChunk();
+        }
 
-        const speed = 60; // Slower speed for smaller resolution
-        const jumpForce = -250; // Adjusted for physics scale (gravity 1000 might feel heavy, let's check)
+        // Parallax
+        const camX = this.cameras.main.scrollX;
+        this.bg1.tilePositionX = camX * 0.1;
+        this.bg2.tilePositionX = camX * 0.3;
+        this.bg3.tilePositionX = camX * 0.5;
+
+        // Physics limits (Fall off world)
+        if (this.player.y > 300) {
+            this.scene.restart();
+        }
+
+        const speed = 80;
+        const jumpForce = -250;
 
         const { left, right, up, space } = this.cursors;
         const { A, D, W, Z, X } = this.wasd;
@@ -109,7 +130,6 @@ export class Game extends Phaser.Scene {
                 } else if (Phaser.Input.Keyboard.JustDown(X)) {
                     this.player.play('attack_2');
                 } else {
-                    // Only play idle if not attacking
                     if (!this.player.anims.isPlaying || (this.player.anims.currentAnim.key !== 'attack_1' && this.player.anims.currentAnim.key !== 'attack_2')) {
                         this.player.play('idle', true);
                     }
@@ -123,7 +143,6 @@ export class Game extends Phaser.Scene {
             this.player.play('jump', true);
         }
 
-        // Attack completion handling
         this.player.on('animationcomplete', (anim) => {
             if (anim.key === 'attack_1' || anim.key === 'attack_2') {
                 this.player.play('idle', true);

@@ -8,17 +8,29 @@ test('Game loads and runs', async ({ page }) => {
     const canvas = page.locator('canvas');
     await expect(canvas).toBeVisible();
 
-    // Basic check: Ensure no console errors
-    page.on('console', msg => {
-        if (msg.type() === 'error') {
-            console.log(`Error text: "${msg.text()}"`);
-        }
-    });
-
     // Verify the canvas size attributes (native resolution)
     await expect(canvas).toHaveAttribute('width', '320');
     await expect(canvas).toHaveAttribute('height', '180');
 
-    // Take a screenshot for visual verification
-    await page.screenshot({ path: 'tests/game_initial_load.png' });
+    // Check for "infinite" world: Player can move right beyond initial screen width
+    // We'll simulate holding the right key and check if camera moves
+
+    // Wait for game to be ready (approx)
+    await page.waitForTimeout(1000);
+
+    // Hold Right
+    await page.keyboard.down('ArrowRight');
+
+    // Wait for some movement
+    await page.waitForTimeout(2000);
+
+    // Release key
+    await page.keyboard.up('ArrowRight');
+
+    // We can't easily check Phaser internal state (camera.scrollX) without exposing it
+    // But we can verify the game didn't crash and is still rendering
+    await expect(canvas).toBeVisible();
+
+    // Take a screenshot of the "moved" state
+    await page.screenshot({ path: 'tests/game_infinite_scroll.png' });
 });
