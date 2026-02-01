@@ -1,0 +1,142 @@
+{
+    "sprites": [
+        {
+            "key": "background_layer_1",
+            "path": "assets/oakwoods/background/background_layer_1.png"
+        },
+        {
+            "key": "background_layer_2",
+            "path": "assets/oakwoods/background/background_layer_2.png"
+        },
+        {
+            "key": "background_layer_3",
+            "path": "assets/oakwoods/background/background_layer_3.png"
+        },
+        {
+            "key": "shop",
+            "path": "assets/oakwoods/decorations/shop.png"
+        },
+        {
+            "key": "fence_1",
+            "path": "assets/oakwoods/decorations/fence_1.png"
+        },
+        {
+            "key": "fence_2",
+            "path": "assets/oakwoods/decorations/fence_2.png"
+        },
+        {
+            "key": "grass_1",
+            "path": "assets/oakwoods/decorations/grass_1.png"
+        },
+        {
+            "key": "grass_2",
+            "path": "assets/oakwoods/decorations/grass_2.png"
+        },
+        {
+            "key": "grass_3",
+            "path": "assets/oakwoods/decorations/grass_3.png"
+        },
+        {
+            "key": "lamp",
+            "path": "assets/oakwoods/decorations/lamp.png"
+        },
+        {
+            "key": "rock_1",
+            "path": "assets/oakwoods/decorations/rock_1.png"
+        },
+        {
+            "key": "rock_2",
+            "path": "assets/oakwoods/decorations/rock_2.png"
+        },
+        {
+            "key": "rock_3",
+            "path": "assets/oakwoods/decorations/rock_3.png"
+        },
+        {
+            "key": "sign",
+            "path": "assets/oakwoods/decorations/sign.png"
+        }
+    ],
+    "spritesheets": [
+        {
+            "key": "char_blue",
+            "path": "assets/oakwoods/character/char_blue.png",
+            "frameWidth": 56,
+            "frameHeight": 56,
+            "animations": [
+                {
+                    "key": "idle",
+                    "start": 0,
+                    "end": 5,
+                    "frameRate": 10,
+                    "repeat": -1
+                },
+                {
+                    "key": "walk",
+                    "start": 8,
+                    "end": 13,
+                    "frameRate": 10,
+                    "repeat": -1
+                },
+                {
+                    "key": "run",
+                    "start": 16,
+                    "end": 23,
+                    "frameRate": 10,
+                    "repeat": -1
+                },
+                {
+                    "key": "jump",
+                    "start": 24,
+                    "end": 31,
+                    "frameRate": 10,
+                    "repeat": -1
+                },
+                {
+                    "key": "attack_1",
+                    "start": 32,
+                    "end": 39,
+                    "frameRate": 15,
+                    "repeat": 0
+                },
+                {
+                    "key": "attack_2",
+                    "start": 40,
+                    "end": 47,
+                    "frameRate": 15,
+                    "repeat": 0
+                },
+                {
+                    "key": "death",
+                    "start": 48,
+                    "end": 51,
+                    "frameRate": 5,
+                    "repeat": 0
+                }
+            ]
+        },
+        {
+            "key": "shop_anim",
+            "path": "assets/oakwoods/decorations/shop_anim.png",
+            "frameWidth": 118,
+            "frameHeight": 128,
+            "animations": [
+                {
+                    "key": "shop_idle",
+                    "start": 0,
+                    "end": 5,
+                    "frameRate": 10,
+                    "repeat": -1
+                }
+            ]
+        }
+    ],
+    "tilesets": [
+        {
+            "key": "oak_woods_tileset",
+            "path": "assets/oakwoods/oak_woods_tileset.png",
+            "tileWidth": 24,
+            "tileHeight": 24
+        }
+    ]
+}

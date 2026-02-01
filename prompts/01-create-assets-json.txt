@@ -1,0 +1,5 @@
+use phaser-gamedev skills to do the followings:
+1. Study the assets in @public/assets/oakwoods/ , create an assets.json thatis an index to the assets. 
+2. Account for spritesheet animations @public/assets/oakwoods/character/char_blue.png  
+3. Account also for tilesets @public/assets/oakwoods/oak_woods_tileset.png
+4. So that we can easily reference this assets.json for phaser 

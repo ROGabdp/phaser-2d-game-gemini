@@ -1,0 +1,8 @@
+Let's use the phaser-gamedev skills to replicate the @mockup.png
+But do it slowly.
+1. Plan it out first - basically you want to add the three background layers first. 
+2. Then the tileset for just a flat ground, in a single layer.
+3. Place the character and animate it with controls. 
+That's the baseline.
+Use @public/assets/oakwoods/assets.json for list of assets.
+Use playwright-testing skills and the playwright MCP server to test the implementation.
